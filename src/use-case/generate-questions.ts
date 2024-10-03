@@ -1,4 +1,4 @@
-import { IQuiz } from "@/entities/quiz";
+import { Question } from "@/entities/quiz";
 import OpenAI from "openai";
 
 interface GenerateQuizUseCaseRequest {
@@ -9,10 +9,10 @@ interface GenerateQuizUseCaseRequest {
 }
 
 interface GenerateQuizUseCaseResponse {
-  quiz: IQuiz;
+  questions: Question[];
 }
 
-export async function generateQuiz({
+export async function generateQuestions({
   category,
   theme,
   quantity,
@@ -55,5 +55,7 @@ export async function generateQuiz({
     },
   });
 
-  return { quiz: response.choices[0].message.content };
+  return {
+    questions: response.choices[0].message.content as unknown as Question[],
+  };
 }

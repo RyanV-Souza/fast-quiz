@@ -1,16 +1,19 @@
-import { model, Schema } from "mongoose";
+import { model, ObjectId, Schema } from "mongoose";
 
 export type Option = {
+  id: ObjectId;
   text: string;
   isCorrect: boolean;
 };
 
 export type Question = {
+  id: ObjectId;
   text: string;
   options: Option[];
 };
 
 export interface IQuiz {
+  id: ObjectId;
   theme: string;
   category: string;
   quantity: number;

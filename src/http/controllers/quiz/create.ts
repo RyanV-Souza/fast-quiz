@@ -1,10 +1,11 @@
 import { createQuiz } from "@/use-case/create-quiz";
 import { LimitExcedeedError } from "@/http/controllers/error/limit-excedeed";
 import { getUser } from "@/use-case/get-user";
-import { verifyDailyLimit } from "@/use-case/verify-daily-limit";
 import dayjs from "dayjs";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
+import { getQuiz } from "@/use-case/get-quiz";
+import { generateQuestions } from "@/use-case/generate-questions";
 
 export async function create(request: FastifyRequest, reply: FastifyReply) {
   const createQuizBodySchema = z.object({
@@ -12,7 +13,6 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     theme: z.string(),
     quantity: z.number(),
     language: z.string(),
-    quantity: z.number(),
   });
 
   const { theme, category, quantity, language } = createQuizBodySchema.parse(
@@ -35,12 +35,28 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     throw new LimitExcedeedError();
   }
 
-  const { quiz: createdQuiz } = await createQuiz({
+  const { quiz } = await getQuiz({ theme, category, quantity, language });
+
+  if (
+    !user.quizzesAnswered.find((answer) => answer.quizId === quiz.id.toString())
+  ) {
+    return reply.status(200).send({ quiz });
+  }
+
+  const { questions } = await generateQuestions({
     category,
     theme,
     quantity,
     language,
   });
 
-  return reply.status(201).send();
+  const { quiz: createdQuiz } = await createQuiz({
+    category,
+    theme,
+    quantity,
+    language,
+    questions,
+  });
+
+  return reply.status(200).send({ quiz: createdQuiz });
 }

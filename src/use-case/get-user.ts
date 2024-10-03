@@ -1,5 +1,5 @@
 import { IUser, User } from "@/entities/user";
-import { UserNotFoundError } from "./errors/user-not-found";
+import { ResourceNotFoundError } from "./errors/resource-not-found";
 
 interface GetUserUseCaseRequest {
   id: string;
@@ -15,7 +15,7 @@ export async function getUser({
   const user = await User.findById(id);
 
   if (!user) {
-    throw new UserNotFoundError();
+    throw new ResourceNotFoundError();
   }
 
   return { user };

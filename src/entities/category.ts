@@ -1,4 +1,10 @@
-import { model, Schema } from "mongoose";
+import { model, ObjectId, Schema } from "mongoose";
+
+export interface ICategory {
+  id: ObjectId;
+  name: string;
+  description: string;
+}
 
 const CategorySchema = new Schema({
   name: {

@@ -1,3 +1,4 @@
+import { ObjectId } from "@fastify/mongodb";
 import { Schema, model } from "mongoose";
 
 export type QuizAnswer = {
@@ -6,6 +7,7 @@ export type QuizAnswer = {
 };
 
 export interface IUser {
+  id: ObjectId;
   name: string;
   email: string;
   password: string;
